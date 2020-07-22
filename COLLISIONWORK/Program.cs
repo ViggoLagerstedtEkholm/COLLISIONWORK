@@ -11,7 +11,7 @@ namespace COLLISIONWORK.COLLISIONWORKEngine
         static void Main(string[] args)
         {
             Console.WriteLine("Test");
-            Game Game = new Game();
+            new Game();
         }
     }
 }

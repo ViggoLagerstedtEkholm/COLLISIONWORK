@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace COLLISIONWORK.COLLISIONWORKEngine
 {
-    class Window : Form
+    public class Window : Form
     {
         public Window()
         {
