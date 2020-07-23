@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace COLLISIONWORK.World
 {
-    public class Worldbuilder
+    public class WorldBuilder
     {
         private ShapeHandler shapeHandler;
         private Vector2d Dimensions;
@@ -17,15 +17,16 @@ namespace COLLISIONWORK.World
 
         private string[,] World =
         {
+            {"w", "w", "w", "w", "w", "w", "b"},
             {".", ".", ".", ".", ".", ".", "b"},
             {".", ".", ".", ".", ".", ".", "b"},
             {".", ".", ".", ".", ".", ".", "b"},
             {".", ".", ".", ".", ".", ".", "b"},
             {".", ".", ".", ".", ".", ".", "b"},
-            {".", ".", ".", ".", ".", ".", "b"},
+            {"w", "w", "w", "w", "w", "w", "b"},
         };
 
-        public Worldbuilder(ShapeHandler shapeHandler, Vector2d Dimensions)
+        public WorldBuilder(ShapeHandler shapeHandler, Vector2d Dimensions)
         {
             this.shapeHandler = shapeHandler;
             this.Dimensions = Dimensions;
@@ -43,7 +44,11 @@ namespace COLLISIONWORK.World
                     {
                         colors.Add(Color.FromArgb(100 + i , 10 + j, 0));
                         
-                        shapeHandler.addShape(new Shape2D(new Vector2d(i * 211, j * 100), new Vector2d(211, 100), Color.Black, TypeSpec.boundries));
+                        shapeHandler.addShape(new Shape2D(new Vector2d(i * 181, j * 100), new Vector2d(181, 100), Color.Black, TypeSpec.boundries));
+                    }
+                    if(World[i,j] == "w")
+                    {
+                        shapeHandler.addShape(new Shape2D(new Vector2d(i * 181, j * 100), new Vector2d(181, 100), Color.Bisque, TypeSpec.Walls));
                     }
                 }
             }
