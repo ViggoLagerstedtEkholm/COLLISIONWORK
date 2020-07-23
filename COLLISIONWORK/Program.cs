@@ -10,7 +10,6 @@ namespace COLLISIONWORK.COLLISIONWORKEngine
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Test");
             new Game();
         }
     }
