@@ -14,9 +14,10 @@ namespace COLLISIONWORK.COLLISIONWORKEngine
 {
     public class Game : COLLISIONWORKEngine
     {
-        private Shape2D player;
+        private Shape2D playerShape;
         private ShapeHandler shapeHandler;
         private Input input;
+        private LevelHandler levelHandler;
         public Game() : base(
             "COLLISIONWORK",
             new Vector2d(1280, 720),
@@ -28,24 +29,37 @@ namespace COLLISIONWORK.COLLISIONWORKEngine
             shapeHandler.ChangeColor();
         }
 
-        public override void OnLoad(ShapeHandler shapeHandler, Vector2d dimensions, Window window)
+        public override void OnLoad(ShapeHandler shapeHandler, Vector2d dimensions, Window window, LevelHandler levelHandler, Sound Sound)
         {
-            player = new Shape2D(new Vector2d(10, 10), new Vector2d(50, 50), Color.Purple, TypeSpec.Player);
+            playerShape = new Shape2D(new Vector2d(200, 10), new Vector2d(50, 50), Color.Purple, TypeSpec.Player);
             this.shapeHandler = shapeHandler;
-            shapeHandler.addShape(player);
-            new Worldbuilder(shapeHandler, dimensions);
-            input = new Input(player, window, shapeHandler);
+            this.levelHandler = levelHandler;
+            
+            shapeHandler.addShape(playerShape);
+            new WorldBuilder(shapeHandler, dimensions);
+            input = new Input(playerShape, window, shapeHandler, Sound);
+            Sound.Play();
         }
 
         int frame = 0;
+        int timer = 0;
         public override void OnUpdate()
         {
             //Console.WriteLine($"Frame Count: {frame}");
             frame++;
-            Console.WriteLine("COLLIDED?: " + shapeHandler.IsCollided(player));
-            shapeHandler.Fall(player);
+            timer++;
+            //Console.WriteLine("COLLIDED?: " + shapeHandler.IsCollided(player, TypeSpec.Falling));
+
+            if(timer >= 500)
+            {
+                levelHandler.LevelUp();
+                timer = 0;
+            }
+            shapeHandler.Fall();
             input.UpdateMovement();
-            
+            shapeHandler.CleanUp();
+
+
         }
     }
 }
