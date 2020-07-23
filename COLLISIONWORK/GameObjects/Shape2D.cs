@@ -14,7 +14,9 @@ namespace COLLISIONWORK.GameObjects
     {
         boundries = 0,
         Player = 1,
-        Falling = 2
+        Falling = 2,
+        Walls = 3,
+        Charge = 4
     }
     public class Shape2D
     {
