@@ -15,9 +15,6 @@ namespace COLLISIONWORK.GameObjects
         private readonly int G = 245;
         private readonly int B = 66;
 
-        //int times = 0;
-        private float Gravity = 9.82f;
-        private float Force = 10.0f;
         public ShapeHandler()
         {
             shapes = new List<Shape2D>();
@@ -33,36 +30,15 @@ namespace COLLISIONWORK.GameObjects
             shapes.Remove(aShape);
         }
 
-        public void Fall(Shape2D player)
+        public void Fall()
         {
-            if(!isOnGround(player))
+            foreach(Shape2D aShape in GetShapes())
             {
-                //if(times > 2)
-                //{
-                    player.Pos.Y += 2.0f;
-                    //times = 0;
-                //}
+                if(aShape.Type == TypeSpec.Falling)
+                {
+                    aShape.Pos.Y += 0.5f;
+                }
             }
-        }
-
-        public void jump(Shape2D player)
-        {
-           
-            if (isOnGround(player))
-            {
-                player.Pos.Y += 2.0f;
-            }
-        }
-
-        private bool isOnGround(Shape2D player)
-        {
-            bool onGround = false;
-
-            if(IsCollided(player))
-            {
-                onGround = true;
-            }
-            return onGround;
         }
 
         public void ChangeColor()
@@ -75,13 +51,13 @@ namespace COLLISIONWORK.GameObjects
                 }
             }
         }
-        public bool IsCollided(Shape2D player)
+        public bool IsCollided(Shape2D player, TypeSpec type)
         {
             bool collided = false;
 
-            foreach (Shape2D aShape in GetShapes())
+            foreach (Shape2D aShape in GetShapes().ToList())
             {
-                if (aShape.Type == TypeSpec.boundries)
+                if (aShape.Type == type)
                 {
                     if (player.Pos.X < aShape.Pos.X + aShape.Scale.X &&
                         player.Pos.X + player.Scale.X > aShape.Pos.X &&
@@ -90,9 +66,27 @@ namespace COLLISIONWORK.GameObjects
                     {
                         collided = true;
                     }
+                    if(aShape.Type == TypeSpec.Charge && collided)
+                    {
+                        removeShape(aShape);
+                    }
                 }
             }
             return collided;
+        }
+
+        public void CleanUp()
+        {
+            foreach(Shape2D aShape in shapes)
+            {
+                if(aShape.Type == TypeSpec.Falling)
+                {
+                    if (aShape.Pos.Y > 700)
+                    {
+                        removeShape(aShape);
+                    }
+                }
+            }
         }
 
         public List<Shape2D> GetShapes()
