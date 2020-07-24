@@ -29,28 +29,27 @@ namespace COLLISIONWORK.COLLISIONWORKEngine
             shapeHandler.ChangeColor();
         }
 
-        public override void OnLoad(ShapeHandler shapeHandler, Vector2d dimensions, Window window, LevelHandler levelHandler, Sound Sound)
+        public override void OnLoad(ShapeHandler shapeHandler, Vector2d dimensions, Window window, LevelHandler levelHandler, Sound Sound, Player player)
         {
-            playerShape = new Shape2D(new Vector2d(200, 10), new Vector2d(50, 50), Color.Purple, TypeSpec.Player);
             this.shapeHandler = shapeHandler;
             this.levelHandler = levelHandler;
             
-            shapeHandler.addShape(playerShape);
+            shapeHandler.addShape(player.Shape);
+
             new WorldBuilder(shapeHandler, dimensions);
-            input = new Input(playerShape, window, shapeHandler, Sound);
+            input = new Input(playerShape, window, shapeHandler, Sound, player, levelHandler);
+
             Sound.Play();
         }
 
-        int frame = 0;
         int timer = 0;
         public override void OnUpdate()
         {
             //Console.WriteLine($"Frame Count: {frame}");
-            frame++;
             timer++;
             //Console.WriteLine("COLLIDED?: " + shapeHandler.IsCollided(player, TypeSpec.Falling));
 
-            if(timer >= 500)
+            if(timer >= 1000)
             {
                 levelHandler.LevelUp();
                 timer = 0;
@@ -58,7 +57,7 @@ namespace COLLISIONWORK.COLLISIONWORKEngine
             shapeHandler.Fall();
             input.UpdateMovement();
             shapeHandler.CleanUp();
-
+            //Console.WriteLine(Window.MousePosition);
 
         }
     }
