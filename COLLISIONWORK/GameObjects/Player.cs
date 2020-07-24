@@ -14,7 +14,7 @@ namespace COLLISIONWORK.GameObjects
         public int Health { get; set; }
         private Sound sound;
 
-        public Player(Shape2D Shape, int Health, Sound sound, ShapeHandler shapeHandler)
+        public Player(Shape2D Shape, int Health, Sound sound)
         {
             this.Shape = Shape;
             this.Health = Health;
