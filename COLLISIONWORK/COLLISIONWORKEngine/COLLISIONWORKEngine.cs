@@ -21,6 +21,7 @@ namespace COLLISIONWORK.COLLISIONWORKEngine
         private ShapeHandler shapeHandler;
         private LevelHandler levelHandler;
         private Sound Sound;
+        private Player player;
         public COLLISIONWORKEngine(string Title, Vector2d ScreenDimensions, ShapeHandler shapeHandler)
         {
             this.ScreenDimensions = ScreenDimensions;
@@ -29,10 +30,16 @@ namespace COLLISIONWORK.COLLISIONWORKEngine
             this.levelHandler = new LevelHandler(this.shapeHandler);
             this.Sound = new Sound();
 
+            Shape2D playerShape = new Shape2D(new Vector2d(200, 200), new Vector2d(50, 50), Color.Purple, TypeSpec.Player);
+            player = new Player(playerShape, 200, Sound, shapeHandler, levelHandler);
+
             GameWindow = new Window();
             GameWindow.Size = new Size((int)ScreenDimensions.X, (int)ScreenDimensions.Y);
+            GameWindow.FormBorderStyle = FormBorderStyle.FixedToolWindow;
+
             GameWindow.Text = this.Title;
             GameWindow.Paint += Renderer;
+            
            
             GameLoopThread = new Thread(GameLoop);
             GameLoopThread.Start();
@@ -42,7 +49,7 @@ namespace COLLISIONWORK.COLLISIONWORKEngine
         void GameLoop()
         {
             //Play music, load sprites.
-            OnLoad(shapeHandler, ScreenDimensions, GameWindow, levelHandler, Sound);
+            OnLoad(shapeHandler, ScreenDimensions, GameWindow, levelHandler, Sound, player);
 
             while (GameLoopThread.IsAlive)
             {
@@ -54,9 +61,7 @@ namespace COLLISIONWORK.COLLISIONWORKEngine
                     Thread.Sleep(5);
                 }
                 catch
-                {
-                    Console.WriteLine("Loading...");
-                }
+                {}
             }
         }
 
@@ -69,9 +74,31 @@ namespace COLLISIONWORK.COLLISIONWORKEngine
             {
                 g.FillRectangle(new SolidBrush(aShape.Color), aShape.Pos.X, aShape.Pos.Y, aShape.Scale.X, aShape.Scale.Y);
             }
+
+            g.DrawRectangle(Pens.Black, new Rectangle(32, 32, 64, 200));
+            g.FillRectangle(new SolidBrush(Color.Red), new Rectangle(32, 32, 64, player.Health));
+
+            if(player.CheckDead())
+            {
+                foreach(Shape2D aShape in shapeHandler.GetShapes())
+                {
+                    if(aShape.Type == TypeSpec.Falling)
+                    {
+                        shapeHandler.removeShape(aShape);
+                    }
+                }
+                levelHandler.Levels = 0;
+                Sound.Stop();
+                g.DrawString("DEAD! Press ENTER to restart.", new Font("Arial", 24, FontStyle.Bold), new SolidBrush(Color.White), 400, 50);
+            }
+            else
+            {
+                string level = levelHandler.Levels.ToString();
+                g.DrawString("Level: " + level, new Font("Arial", 24, FontStyle.Bold), new SolidBrush(Color.White), 550, 50);
+            }
         }
 
-        public abstract void OnLoad(ShapeHandler shapeHandler, Vector2d dimensions, Window GameWindow, LevelHandler levelHandler, Sound sound);
+        public abstract void OnLoad(ShapeHandler shapeHandler, Vector2d dimensions, Window GameWindow, LevelHandler levelHandler, Sound sound, Player player);
         public abstract void OnUpdate();
         public abstract void OnDraw();
     }
