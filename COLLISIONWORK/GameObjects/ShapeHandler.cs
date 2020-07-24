@@ -11,13 +11,14 @@ namespace COLLISIONWORK.GameObjects
     public class ShapeHandler
     {
         private readonly List<Shape2D> shapes;
-        private readonly int R = 84;
-        private readonly int G = 245;
-        private readonly int B = 66;
-
+        private int R;
+        private int G;
+        private int B;
+        private Random r;
         public ShapeHandler()
         {
             shapes = new List<Shape2D>();
+            r = new Random();
         }
 
         public void addShape(Shape2D aShape)
@@ -41,15 +42,15 @@ namespace COLLISIONWORK.GameObjects
             }
         }
 
-        public void ChangeColor()
+        public Color ChangeColor()
         {
-            foreach (Shape2D aShape in shapes)
-            {
-                if (aShape.Type == TypeSpec.boundries)
-                {
-                    aShape.Color = Color.FromArgb(R, G, B);
-                }
-            }
+            R = r.Next(0, 255);
+            R = r.Next(0, 255);
+            R = r.Next(0, 255);
+
+            Color aColor = Color.FromArgb(R, G, B);
+
+            return aColor;
         }
         public bool IsCollided(Shape2D player, TypeSpec type)
         {
@@ -75,13 +76,33 @@ namespace COLLISIONWORK.GameObjects
             return collided;
         }
 
+        public Shape2D IsCollided(Vector2d pos, TypeSpec type)
+        {
+            Shape2D shape = null;
+
+            foreach (Shape2D aShape in GetShapes().ToList())
+            {
+                if (aShape.Type == type)
+                {
+                    if (pos.X < aShape.Pos.X + aShape.Scale.X &&
+                        pos.X > aShape.Pos.X &&
+                        pos.Y < aShape.Pos.Y + aShape.Scale.Y &&
+                        pos.Y > aShape.Pos.Y)
+                    {
+                        return aShape;
+                    }
+                }
+            }
+            return shape;
+        }
+
         public void CleanUp()
         {
             foreach(Shape2D aShape in shapes)
             {
                 if(aShape.Type == TypeSpec.Falling)
                 {
-                    if (aShape.Pos.Y > 700)
+                    if (aShape.Pos.Y > 600)
                     {
                         removeShape(aShape);
                     }
@@ -91,7 +112,7 @@ namespace COLLISIONWORK.GameObjects
 
         public List<Shape2D> GetShapes()
         {
-            return shapes;
+            return shapes.ToList();
         }
     }
 }
