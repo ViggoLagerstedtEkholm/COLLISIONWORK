@@ -31,7 +31,7 @@ namespace COLLISIONWORK.COLLISIONWORKEngine
             this.Sound = new Sound();
 
             Shape2D playerShape = new Shape2D(new Vector2d(200, 200), new Vector2d(50, 50), Color.Purple, TypeSpec.Player);
-            player = new Player(playerShape, 200, Sound, shapeHandler, levelHandler);
+            player = new Player(playerShape, 200, Sound);
 
             GameWindow = new Window();
             GameWindow.Size = new Size((int)ScreenDimensions.X, (int)ScreenDimensions.Y);
